@@ -1,0 +1,28 @@
+jobs:
+  main:
+    image: node:14
+    requires: [ ~commit ]
+    steps:
+      - ls
+  sub-1:
+    image: node:14
+    requires: [ ~main ]
+    steps:
+      - ls
+  sub-2:
+    image: node:14
+    requires: [ ~main ]
+    steps:
+      - gache: |
+          sleep 10
+          RAND=$(($(date +%s) % 2))
+          if [ "${RAND}" = "0" ]; then
+            echo "exit 1"
+            exit 1;
+          fi
+          echo "Success!"
+  fin:
+    image: node:14
+    requires: [ sub-1, sub-2 ]
+    steps:
+      - ls
